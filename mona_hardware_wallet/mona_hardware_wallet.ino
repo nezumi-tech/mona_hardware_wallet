@@ -21,8 +21,8 @@ void loop() {
       }
       switch (Serial.read()) {
         case '1':
-          Serial.println("Show Address");
-          Serial.println("Address is");
+          Serial.println(F("Show Address"));
+          Serial.println(F("Address is"));
           Serial.println(EEPROMread(0, 33));
           initialMes2();
           break;
@@ -40,9 +40,9 @@ void loop() {
       break;
 
     case 1:
-      Serial.println("Show Private Key");
+      Serial.println(F("Show Private Key"));
       if (isPaswdCorrect(EEPROMread(85, 6)) == true) {
-        Serial.println("Private Key is");
+        Serial.println(F("Private Key is"));
         Serial.println(EEPROMread(34, 51));
       }
       Seq = 0;
@@ -50,9 +50,9 @@ void loop() {
       break;
 
     case 2:
-      Serial.println("Setting");
+      Serial.println(F("Setting"));
       if (isPaswdCorrect(EEPROMread(85, 6)) == true) {
-        Serial.println("1.Set Address and Private Key\n2.Set Password\n3.Initialize\n4.back");
+        Serial.println(F("1.Set Address and Private Key\n2.Set Password\n3.Initialize\n4.back"));
         while (Serial.available() == 0) {
         }
         switch (Serial.read()) {
@@ -61,8 +61,8 @@ void loop() {
             char inPrky[51];
             Adrs = "";
             Prky = "";
-            Serial.println("Set Address and Private Key");
-            Serial.println("Enter your NEW Address");
+            Serial.println(F("Set Address and Private Key"));
+            Serial.println(F("Enter your NEW Address"));
             while (Serial.available() == 0) {
             }
             delay(500);
@@ -72,7 +72,7 @@ void loop() {
             for (int i = 0; i <= 33; i++) {
               Adrs.concat(inAdrs[i]);
             }
-            Serial.println("Enter your NEW Private Key");
+            Serial.println(F("Enter your NEW Private Key"));
             while (Serial.available() == 0) {
             }
             delay(500);
@@ -84,14 +84,14 @@ void loop() {
             }
             EEPROMwrite(0, Adrs);
             EEPROMwrite(34, Prky);
-            Serial.println("Set Address and Private Key Completed");
+            Serial.println(F("Set Address and Private Key Completed"));
             Seq = 0;
             initialMes2();
             break;
 
           case '2':
-            Serial.println("Set Password");
-            Serial.println("Enter your NEW Password\nYou must use 6 character\nYou can use 0-9 A-Z a-z");
+            Serial.println(F("Set Password"));
+            Serial.println(F("Enter your NEW Password\nYou must use 6 character\nYou can use 0-9 A-Z a-z"));
             char inPswd[6];
             Pswd = "";
             while (Serial.available() == 0) {
@@ -104,36 +104,36 @@ void loop() {
               Pswd.concat(inPswd[i]);
             }
             EEPROMwrite(85, Pswd);
-            Serial.println("Set Password Completed");
+            Serial.println(F("Set Password Completed"));
             Seq = 0;
             initialMes2();
 
             break;
 
           case '3':
-            Serial.println("Initialize?\n1.No\n2.Yes");
+            Serial.println(F("Initialize?\n1.No\n2.Yes"));
             while (Serial.available() == 0) {
             }
             switch (Serial.read()) {
               case '1':
-                Serial.println("Initialization was canceled");
+                Serial.println(F("Initialization was canceled"));
                 Seq = 0;
                 initialMes2();;
                 break;
               case '2':
-                Serial.println("Are you sure?\n1.No\n2.Yes");
+                Serial.println(F("Are you sure?\n1.No\n2.Yes"));
                 while (Serial.available() == 0) {
                 }
                 switch (Serial.read()) {
                   case '1':
-                    Serial.println("Initialization was canceled");
+                    Serial.println(F("Initialization was canceled"));
                     Seq = 0;
                     initialMes2();
                     break;
                   case '2':
-                    Serial.println("Initializing...");
+                    Serial.println(F("Initializing..."));
                     initialize();
-                    Serial.println("Initialization complete");
+                    Serial.println(F("Initialization complete"));
                     Seq = 0;
                     initialMes2();
                     break;
@@ -179,18 +179,18 @@ void initialMes() {
 }
 
 void initialMes1() {
-  Serial.println("Welcome to Monacoin Hardware Wallet.");
+  Serial.println(F("Welcome to Monacoin Hardware Wallet."));
 }
 
 void initialMes2() {
-  Serial.println("MENU\n1.Show Address\n2.Show Private Key\n3.Setting");
+  Serial.println(F("MENU\n1.Show Address\n2.Show Private Key\n3.Setting"));
 }
 
 boolean isPaswdCorrect(String inpswd) {
   boolean correct;
   char key[6];
   String Pswdinput;
-  Serial.println("Please enter password");
+  Serial.println(F("Please enter password"));
   while (Serial.available() == 0) {
   }
   delay(500);
@@ -201,10 +201,10 @@ boolean isPaswdCorrect(String inpswd) {
     Pswdinput.concat(key[i]);
   }
   if (Pswdinput == inpswd) {
-    Serial.println("Password is correct");
+    Serial.println(F("Password is correct"));
     correct = true;
   } else {
-    Serial.println("Password is not correct");
+    Serial.println(F("Password is not correct"));
     correct = false;
   }
   return correct;
