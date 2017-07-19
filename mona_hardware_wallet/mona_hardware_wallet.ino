@@ -9,6 +9,7 @@ void setup() {
   Serial.begin(9600);
   while (!Serial) {
   }
+  //initialize(); /*初回起動時実行してください*/
   initialcheck();
   initialMes();
 }
