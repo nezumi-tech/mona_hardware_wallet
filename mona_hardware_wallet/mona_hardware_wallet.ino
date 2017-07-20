@@ -1,4 +1,23 @@
 #include <EEPROM.h>
+/**
+ * FA***:アドレス  ,FL***:サイズ
+ * |アドレス|プライベートキー|パスワード|チェック|
+ * |FAAddress
+ *          |FAPrivate
+ *                           |FAPass
+ *                                      |FAInitChek
+ *                                               |FAEND
+ */
+#define FLAddress 34   //Address
+#define FLPrivate 51   //PrivateKey
+#define FLPass 6       //Password
+#define FLInitChek 1   //InitializeChek
+
+#define FAAddress 0
+#define FAPrivate (FAAddress+FLAddress)
+#define FAPass (FAPrivate+FLPrivate)
+#define FAInitChek (FAPass+FLPass)
+#define FAEND (FAInitChek+FLInitChek)
 
 int Seq = 0;
 String Adrs;
@@ -23,7 +42,7 @@ void loop() {
         case '1':
           Serial.println(F("Show Address"));
           Serial.println(F("Address is"));
-          Serial.println(EEPROMread(0, 33));
+          Serial.println(EEPROMread(FAAddress, FLAddress));
           initialMes2();
           break;
 
@@ -41,9 +60,9 @@ void loop() {
 
     case 1:
       Serial.println(F("Show Private Key"));
-      if (isPaswdCorrect(EEPROMread(85, 6)) == true) {
+      if (isPaswdCorrect(EEPROMread(FAPass, FLPass)) == true) {
         Serial.println(F("Private Key is"));
-        Serial.println(EEPROMread(34, 51));
+        Serial.println(EEPROMread(FAPrivate, FLPrivate));
       }
       Seq = 0;
       initialMes2();
@@ -51,7 +70,7 @@ void loop() {
 
     case 2:
       Serial.println(F("Setting"));
-      if (isPaswdCorrect(EEPROMread(85, 6)) == true) {
+      if (isPaswdCorrect(EEPROMread(FAPass, FLPass)) == true) {
         Serial.println(F("1.Set Address and Private Key\n2.Set Password\n3.Initialize\n4.back"));
         while (Serial.available() == 0) {
         }
@@ -82,8 +101,8 @@ void loop() {
             for (int i = 0; i <= 50; i++) {
               Prky.concat(inPrky[i]);
             }
-            EEPROMwrite(0, Adrs);
-            EEPROMwrite(34, Prky);
+            EEPROMwrite(FAAddress, Adrs);
+            EEPROMwrite(FAPrivate, Prky);
             Serial.println(F("Set Address and Private Key Completed"));
             Seq = 0;
             initialMes2();
@@ -103,7 +122,7 @@ void loop() {
             for (int i = 0; i <= 5; i++) {
               Pswd.concat(inPswd[i]);
             }
-            EEPROMwrite(85, Pswd);
+            EEPROMwrite(FAPass, Pswd);
             Serial.println(F("Set Password Completed"));
             Seq = 0;
             initialMes2();
@@ -118,7 +137,7 @@ void loop() {
               case '1':
                 Serial.println(F("Initialization was canceled"));
                 Seq = 0;
-                initialMes2();;
+                initialMes2();
                 break;
               case '2':
                 Serial.println(F("Are you sure?\n1.No\n2.Yes"));
@@ -157,7 +176,7 @@ void loop() {
 
 void initialcheck() {
   String Intsum = "1";
-  if (EEPROMread(91, 1) != Intsum) {
+  if (EEPROMread(FAInitChek, FLInitChek) != Intsum) {
     initialize();
   }
 }
@@ -167,10 +186,10 @@ void initialize() {
   String IntPrky = "InitialPrivateKeyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
   String IntPswd = "000000";
   String Intsum = "1";
-  EEPROMwrite(0, IntAdrs);
-  EEPROMwrite(34, IntPrky);
-  EEPROMwrite(85, IntPswd);
-  EEPROMwrite(91, Intsum);
+  EEPROMwrite(FAAddress, IntAdrs);
+  EEPROMwrite(FAPrivate, IntPrky);
+  EEPROMwrite(FAPass, IntPswd);
+  EEPROMwrite(FAInitChek, Intsum);
 }
 
 void initialMes() {
